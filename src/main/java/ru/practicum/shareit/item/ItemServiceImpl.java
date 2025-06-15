@@ -41,7 +41,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto getById(Long itemId) {
         Item item = itemStorage.getById(itemId)
-                .orElseThrow(() -> new ItemNotFoundException("Вещь не найдена"));
+                .orElseThrow(() -> new ItemNotFoundException(String.format("Вещь с id=%d не найдена", itemId)));
         return ItemMapper.toItemDto(item);
     }
 
@@ -63,7 +63,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto update(Long ownerId, Long itemId, ItemDto itemDto) {
         Item existingItem = itemStorage.getById(itemId)
-                .orElseThrow(() -> new ItemNotFoundException("Вещь не найдена"));
+                .orElseThrow(() -> new ItemNotFoundException(String.format("Вещь с id=%d не найдена", itemId)));
 
         if (!existingItem.getOwnerId().equals(ownerId)) {
             throw new AccessException("Редактировать вещь может только её владелец");

@@ -17,7 +17,7 @@ import java.util.List;
 public class ItemController {
 
     private final ItemService itemService;
-    private final String header = "X-Sharer-User-Id";
+    private final String userIdHeader = "X-Sharer-User-Id";
 
     @Autowired
     public ItemController(ItemService itemService) {
@@ -25,14 +25,14 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto addItem(@RequestHeader(header) Long ownerId,
+    public ItemDto addItem(@RequestHeader(userIdHeader) Long ownerId,
                            @Valid @RequestBody ItemDto itemDto) {
         log.info("Получен HTTP-запрос на добавление вещи пользователю с id: {}", ownerId);
         return itemService.add(ownerId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestHeader(header) Long ownerId,
+    public ItemDto updateItem(@RequestHeader(userIdHeader) Long ownerId,
                               @PathVariable Long itemId,
                               @RequestBody ItemDto itemDto) {
         log.info("Получен HTTP-запрос на обновление вещи  с id: {}", itemId);
@@ -40,7 +40,7 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@RequestHeader(header) Long ownerId,
+    public ItemDto getItemById(@RequestHeader(userIdHeader) Long ownerId,
                                @PathVariable Long itemId) {
         log.info("Получен HTTP-запрос на получении вещи по id: {}", itemId);
         return itemService.getById(itemId);
@@ -48,7 +48,7 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDto> getAllItemsByOwner(
-            @RequestHeader(header) Long ownerId) {
+            @RequestHeader(userIdHeader) Long ownerId) {
         log.info("Получен HTTP-запрос на получение всех вещей пользователя с id: {}", ownerId);
         return itemService.getAllItemsByOwner(ownerId);
     }
@@ -56,7 +56,7 @@ public class ItemController {
     @GetMapping("/search")
     public List<ItemDto> searchItems(
             @RequestParam String text,
-            @RequestHeader(header) Long userId) {
+            @RequestHeader(userIdHeader) Long userId) {
         log.info("Получен HTTP-запрос на получение всех доступных вещей");
         return itemService.searchAvailableItems(text);
     }
