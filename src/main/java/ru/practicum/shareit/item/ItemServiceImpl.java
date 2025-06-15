@@ -29,7 +29,7 @@ public class ItemServiceImpl implements ItemService {
         try {
             userService.getById(ownerId);
         } catch (UserNotFoundException e) {
-            throw new UserNotFoundException("Пользователь с id=" + ownerId + " не найден");
+            throw new UserNotFoundException(String.format("Пользователь с id=%d не найден", ownerId));
         }
 
         Item item = ItemMapper.toItem(itemDto, ownerId);

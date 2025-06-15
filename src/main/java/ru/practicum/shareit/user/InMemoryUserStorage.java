@@ -20,15 +20,14 @@ public class InMemoryUserStorage implements UserStorage {
                 .filter(user -> Objects.equals(user.getId(), id))
                 .findFirst()
                 .orElseThrow(() -> {
-                    String errorMessage = String.format("Пользователь с id %d не найден", id);
-                    throw new UserNotFoundException(errorMessage);
+                    throw new UserNotFoundException(String.format("Пользователь с id %d не найден", id));
                 });
     }
 
     @Override
     public User create(User user) {
         if (existingEmails.contains(user.getEmail())) {
-            throw new ExistingEmailsException("Пользователь с email " + user.getEmail() + " уже существует");
+            throw new ExistingEmailsException(String.format("Пользователь с email %s уже существует", user.getEmail()));
         }
         user.setId(idCounter++);
         idToUser.put(user.getId(), user);
@@ -40,8 +39,7 @@ public class InMemoryUserStorage implements UserStorage {
     public User update(User user) {
         Long id = user.getId();
         if (!idToUser.containsKey(id)) {
-            String errorMessage = String.format("Пользователь с id %d не найден", id);
-            throw new UserNotFoundException(errorMessage);
+            throw new UserNotFoundException(String.format("Пользователь с id %d не найден", id));
         }
         User existingUser = idToUser.get(id);
         String newEmail = user.getEmail();
@@ -49,7 +47,7 @@ public class InMemoryUserStorage implements UserStorage {
 
 
         if (!newEmail.equals(oldEmail) && existingEmails.contains(newEmail)) {
-            throw new ExistingEmailsException("Пользователь с email " + user.getEmail() + " уже существует");
+            throw new ExistingEmailsException(String.format("Пользователь с email %s уже существует", user.getEmail()));
         }
         if (!newEmail.equals(oldEmail)) {
             existingEmails.remove(oldEmail);
@@ -68,7 +66,7 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public void delete(Long id) {
         if (!idToUser.containsKey(id)) {
-            throw new UserNotFoundException("Пользователь с id " + id + " не найден");
+            throw new UserNotFoundException(String.format("Пользователь с id %d не найден", id));
         }
         User user = idToUser.get(id);
         existingEmails.remove(user.getEmail());
@@ -80,7 +78,7 @@ public class InMemoryUserStorage implements UserStorage {
         return idToUser.values().stream()
                 .filter(user -> email.equalsIgnoreCase(user.getEmail()))
                 .findFirst()
-                .orElseThrow(() -> new UserNotFoundException("Пользователь с email " + email + " не найден"));
+                .orElseThrow(() -> new UserNotFoundException(String.format("Пользователь с email %s не найден", email)));
     }
 
 }

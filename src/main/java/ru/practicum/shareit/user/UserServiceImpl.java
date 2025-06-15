@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
             try {
                 User userWithSameEmail = userStorage.getByEmail(userDto.getEmail());
                 if (userWithSameEmail != null && !userWithSameEmail.getId().equals(userId)) {
-                    throw new ExistingEmailsException("Пользователь с email " + userDto.getEmail() + " уже существует");
+                    throw new ExistingEmailsException(String.format("Пользователь с email %s уже существует", userDto.getEmail()));
                 }
             } catch (UserNotFoundException e) {
                 log.debug("Пользователь с email не найден");
