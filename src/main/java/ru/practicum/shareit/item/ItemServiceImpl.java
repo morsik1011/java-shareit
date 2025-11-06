@@ -47,8 +47,7 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemDto add(Long ownerId, ItemDto itemDto) {
         User owner = userRepository.findById(ownerId)
-                .orElseThrow(() -> new UserNotFoundException
-                        (String.format("Пользователь с id=%d не найден", ownerId)));
+                .orElseThrow(() -> new UserNotFoundException(String.format("Пользователь с id=%d не найден", ownerId)));
 
         Item item = ItemMapper.toItem(itemDto, ownerId);
         Item savedItem = itemRepository.save(item);
@@ -56,8 +55,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> searchAvailableItems
-            (String text) {
+    public List<ItemDto> searchAvailableItems(String text) {
         if (text == null || text.trim().isEmpty()) {
             return List.of();
         }
@@ -68,8 +66,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto update
-            (Long ownerId, Long itemId, ItemDto itemDto) {
+    public ItemDto update(Long ownerId, Long itemId, ItemDto itemDto) {
         Item existingItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException(String.format("Вещь с id=%d не найдена", itemId)));
 
@@ -95,8 +92,7 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemDtoWithBookings getByIdWithBooking(Long itemId) {
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new ItemNotFoundException
-                        (String.format("Вещь с id=%d не найдена", itemId)));
+                .orElseThrow(() -> new ItemNotFoundException(String.format("Вещь с id=%d не найдена", itemId)));
 
         List<CommentDto> comments = CommentMapper.toListDto(commentRepository.findByItemId(itemId));
 

@@ -26,8 +26,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto create
-            (UserDto userDto) {
+    public UserDto create(UserDto userDto) {
         User user = UserMapper.toUser(userDto);
         User createdUser = userRepository.save(user);
         return UserMapper.toUserDto(createdUser);
@@ -37,17 +36,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getById(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException
-                        (String.format("Пользователь с ID %d не найден", userId)));
+                .orElseThrow(() -> new UserNotFoundException(String.format("Пользователь с ID %d не найден", userId)));
         return UserMapper.toUserDto(user);
     }
 
     @Override
-    public UserDto update
-            (Long userId, UserDto userDto) {
+    public UserDto update(Long userId, UserDto userDto) {
         User existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException
-                        (String.format("Пользователь с ID %d не найден", userId)));
+                .orElseThrow(() -> new UserNotFoundException(String.format("Пользователь с ID %d не найден", userId)));
 
         if (userDto.getEmail() != null && !userDto.getEmail().equals(existingUser.getEmail())) {
             try {
