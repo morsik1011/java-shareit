@@ -56,7 +56,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> searchAvailableItems(String text) {
+    public List<ItemDto> searchAvailableItems
+            (String text) {
         if (text == null || text.trim().isEmpty()) {
             return List.of();
         }
@@ -67,7 +68,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto update(Long ownerId, Long itemId, ItemDto itemDto) {
+    public ItemDto update
+            (Long ownerId, Long itemId, ItemDto itemDto) {
         Item existingItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException(String.format("Вещь с id=%d не найдена", itemId)));
 
