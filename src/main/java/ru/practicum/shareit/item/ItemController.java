@@ -4,13 +4,12 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoWithBookings;
 
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Slf4j
 @RestController
 @RequestMapping("/items")
@@ -40,17 +39,17 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@RequestHeader(userIdHeader) Long ownerId,
-                               @PathVariable Long itemId) {
+    public ItemDtoWithBookings getItemByIdWithBooking(@RequestHeader(userIdHeader) Long ownerId,
+                                                      @PathVariable Long itemId) {
         log.info("Получен HTTP-запрос на получении вещи по id: {}", itemId);
-        return itemService.getById(itemId);
+        return itemService.getByIdWithBooking(itemId);
     }
 
     @GetMapping
-    public List<ItemDto> getAllItemsByOwner(
+    public List<ItemDtoWithBookings> getAllItemsByOwnerWithBookings(
             @RequestHeader(userIdHeader) Long ownerId) {
         log.info("Получен HTTP-запрос на получение всех вещей пользователя с id: {}", ownerId);
-        return itemService.getAllItemsByOwner(ownerId);
+        return itemService.getAllItemsByOwnerWithBookings(ownerId);
     }
 
     @GetMapping("/search")
@@ -59,5 +58,14 @@ public class ItemController {
             @RequestHeader(userIdHeader) Long userId) {
         log.info("Получен HTTP-запрос на получение всех доступных вещей");
         return itemService.searchAvailableItems(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto addComment(@RequestHeader(userIdHeader) Long userId,
+                                 @PathVariable Long itemId,
+                                 @Valid @RequestBody CommentDto commentDto) {
+        log.info("Получен HTTP-запрос на добавление комментария к вещи с id: {} от пользователя с id: {}",
+                itemId, userId);
+        return itemService.addComment(userId, itemId, commentDto);
     }
 }

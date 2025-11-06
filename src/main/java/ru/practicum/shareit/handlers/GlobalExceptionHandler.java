@@ -5,10 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.ApiError;
-import ru.practicum.shareit.exceptions.AccessException;
-import ru.practicum.shareit.exceptions.ExistingEmailsException;
-import ru.practicum.shareit.exceptions.ItemNotFoundException;
-import ru.practicum.shareit.exceptions.UserNotFoundException;
+import ru.practicum.shareit.exceptions.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -45,6 +42,24 @@ public class GlobalExceptionHandler {
     public ApiError handleExistingEmails(ExistingEmailsException exception) {
         return ApiError.builder()
                 .errorCode(HttpStatus.CONFLICT.value())
+                .description(exception.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiError handleBookingNotFound(BookingNotFoundException exception) {
+        return ApiError.builder()
+                .errorCode(HttpStatus.NOT_FOUND.value())
+                .description(exception.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleItemAvailable(ItemAvailableException exception) {
+        return ApiError.builder()
+                .errorCode(HttpStatus.BAD_REQUEST.value())
                 .description(exception.getMessage())
                 .build();
     }
