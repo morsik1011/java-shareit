@@ -160,5 +160,4 @@ public class ItemServiceImpl implements ItemService {
         Comment savedComment = commentRepository.save(comment);
         return CommentMapper.toDto(savedComment);
     }
-
 }
