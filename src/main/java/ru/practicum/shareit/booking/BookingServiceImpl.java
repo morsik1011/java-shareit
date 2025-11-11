@@ -35,7 +35,7 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new UserNotFoundException(String.format("Пользователь с id %d не найден", userId)));
         Long itemId = bookingRequestDto.getItemId();
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new ItemNotFoundException(String.format("Вещь с id %d не найдена",itemId)));
+                .orElseThrow(() -> new ItemNotFoundException(String.format("Вещь с id %d не найдена", itemId)));
 
         if (!item.getAvailable()) {
             String errorMessage = String.format("Вещь с id %d недоступна бля бронирования", itemId);
@@ -53,7 +53,7 @@ public class BookingServiceImpl implements BookingService {
     public BookingResponseDto approve(Long userId, Long bookingId, boolean approved) {
 
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new BookingNotFoundException( String.format("Бронирование с id %d не найдено", bookingId)));
+                .orElseThrow(() -> new BookingNotFoundException(String.format("Бронирование с id %d не найдено", bookingId)));
 
         if (!booking.getItem().getOwnerId().equals(userId)) {
             throw new AccessException("Только владелец вещи может подтверждать бронирование");
@@ -73,7 +73,7 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public BookingResponseDto getById(Long bookingId, Long userId) {
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new BookingNotFoundException( String.format("Бронирование с id %d не найдено", bookingId)));
+                .orElseThrow(() -> new BookingNotFoundException(String.format("Бронирование с id %d не найдено", bookingId)));
 
         boolean isBooker = booking.getBooker().getId().equals(userId);
         boolean isOwner = booking.getItem().getOwnerId().equals(userId);
