@@ -32,10 +32,10 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public BookingResponseDto create(Long userId, BookingRequestDto bookingRequestDto) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("Пользователь с id " + userId + " не найден"));
+                .orElseThrow(() -> new UserNotFoundException(String.format("Пользователь с id %d не найден", userId)));
         Long itemId = bookingRequestDto.getItemId();
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new ItemNotFoundException("Вещь с id " + itemId + " не найдена"));
+                .orElseThrow(() -> new ItemNotFoundException(String.format("Вещь с id %d не найдена",itemId)));
 
         if (!item.getAvailable()) {
             String errorMessage = String.format("Вещь с id %d недоступна бля бронирования", itemId);
@@ -53,7 +53,7 @@ public class BookingServiceImpl implements BookingService {
     public BookingResponseDto approve(Long userId, Long bookingId, boolean approved) {
 
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new BookingNotFoundException("Бронирование с id " + bookingId + " не найдено"));
+                .orElseThrow(() -> new BookingNotFoundException( String.format("Бронирование с id %d не найдено", bookingId)));
 
         if (!booking.getItem().getOwnerId().equals(userId)) {
             throw new AccessException("Только владелец вещи может подтверждать бронирование");
@@ -73,7 +73,7 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public BookingResponseDto getById(Long bookingId, Long userId) {
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new BookingNotFoundException("Бронирование с id " + bookingId + " не найдено"));
+                .orElseThrow(() -> new BookingNotFoundException( String.format("Бронирование с id %d не найдено", bookingId)));
 
         boolean isBooker = booking.getBooker().getId().equals(userId);
         boolean isOwner = booking.getItem().getOwnerId().equals(userId);
@@ -111,7 +111,7 @@ public class BookingServiceImpl implements BookingService {
                 bookings = bookingRepository.findByBookerIdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED);
                 break;
             default:
-                throw new UnknownStateException("Неизвестный статус бронирования: " + state);
+                throw new UnknownStateException(String.format("Неизвестный статус бронирования: %s", state));
         }
 
         return bookings.stream()
@@ -123,7 +123,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingResponseDto> getOwnerBookings(Long userId, String state) {
 
         if (!hasUserAnyItems(userId)) {
-            throw new UserNotFoundException("Пользователь с id " + userId + " не является владельцем ни одной вещи");
+            throw new UserNotFoundException(String.format("Пользователь с id %d не является владельцем ни одной вещи", userId));
         }
 
         LocalDateTime now = LocalDateTime.now();
@@ -157,7 +157,7 @@ public class BookingServiceImpl implements BookingService {
                 log.debug("Найдено REJECTED бронирований владельца: {}", bookings.size());
                 break;
             default:
-                throw new UnknownStateException("Неизвестный статус бронирования: " + state);
+                throw new UnknownStateException(String.format("Неизвестный статус бронирования: %s", state));
         }
 
         return bookings.stream()
