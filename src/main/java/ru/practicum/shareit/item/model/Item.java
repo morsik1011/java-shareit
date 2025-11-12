@@ -1,34 +1,42 @@
 package ru.practicum.shareit.item.model;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.model.ItemRequest;
 
-/**
- * TODO Sprint add-controllers.
- */
+@Entity
+@Table(name = "items")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+
 public class Item {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @NotBlank(message = "Название не должно быть null или пустым")
+
+    @Column(nullable = false)
     String name;
-    @NotBlank(message = "Описание не должно быть null или пустым")
-    @Size(max = 200, message = "Максимальная длина описания — 200 символов")
+
+    @Column(nullable = false)
     String description;
-    @NotBlank(message = "Статус доступности не должно быть null или пустым")
-    String available;
+
+    @Column(nullable = false)
+    Boolean available;
+
+    @Column(name = "owner_id", nullable = false)
     Long ownerId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "request_id")
     ItemRequest request;
 
     public boolean isAvailableForBooking() {
-        return Boolean.parseBoolean(available) || "true".equalsIgnoreCase(available);
+        return Boolean.TRUE.equals(available);
     }
 }
